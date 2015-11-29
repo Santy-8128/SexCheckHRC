@@ -32,7 +32,7 @@ for(i in 1:l)
 	system(paste(path," view -H ",dat[i]," | tr '\t' '\n' | grep -m1 -w SM | cut -d: -f 2 >> ",cohort,"_Orig_sample",sep=""))
 
 }
-
+ 
 	
 print(paste(" Generating Graph for Study : SEX_CHECK_",cohort,".pdf",sep=""))
 
@@ -114,8 +114,15 @@ mydata <- data.frame(mydata, fit$cluster)
 
 
 # vall=c(">10",">5-10",">1-5",">0.5-1",">0.1-0.5",">0.07-0.1",">0.03-0.07","<=0.03")
-    plot(FracXNormFull[-gg],FracYNormFull[-gg],col=mydata[,3],xlab="Average X Coverage / Autosome",ylab="Average Y Coverage / Autosome",main=paste("SEX CHECK - ",cohort,sep=""))
-	
+    if(length(gg)>0)
+		{
+		plot(FracXNormFull[-gg],FracYNormFull[-gg],col=mydata[,3],xlab="Average X Coverage / Autosome",ylab="Average Y Coverage / Autosome",main=paste("SEX CHECK - ",cohort,sep=""))
+		} else
+		{
+		plot(FracXNormFull,FracYNormFull,col=mydata[,3],xlab="Average X Coverage / Autosome",ylab="Average Y Coverage / Autosome",main=paste("SEX CHECK - ",cohort,sep=""))
+}
+
+
 	# legend(1,9,vall,col=c("red","orangered","orange","green4","lawngreen","navyblue","royalblue1","purple3"),title="% of Variants",pch=15,cex=1.2)
 
 	dev.off()
