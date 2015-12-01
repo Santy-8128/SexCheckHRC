@@ -19,7 +19,7 @@ dat=read.table(dat,colClasses="character")[,1]
 l=length(dat)
 system(paste("rm ",cohort,"_Orig_sample",sep=""))
 
-print(" Generating Summary Statistics for Each Sample ... \n\n")
+print(" Now Generating Summary Statistics for Each Sample ... \n\n")
 
 for(i in 1:l)
 {
@@ -77,26 +77,29 @@ j=LIST[jj]
 dat[[jj]]=apply(read.table(paste(cohort,"_Summary_Chr_",j,sep=""),colClasses="character")[,c(2:4)],2,as.numeric)
 }
 	
+	
+	FracNum=0*(1:dim(dat[[1]])[1] )
+	FracDen=0*(1:dim(dat[[1]])[1] )
+	for(jj in 1:22)
+	{
+	
+	FracNum=FracNum+dat[[jj]][,2]
+	FracDen=FracDen+dat[[jj]][,1]
 
-Frac=list()
+	}
+	
+	
+	FullDeno=FracNum/FracDen
+	
+FracXNum=dat[[23]][,2]/dat[[23]][,1]
 
-for(jj in 1:length(LIST))
-{
+FracYNum=dat[[24]][,2]/dat[[24]][,1]
 
-Frac[[jj]]= dat[[jj]][,2]/dat[[jj]][,1]
+	
 
-}
+FracXNormFull=FracXNum/(FullDeno)
+FracYNormFull=FracYNum/(FullDeno)
 
-FracSum=0*(1:length(Frac[[1]]))
-for(jj in 1:22)
-{
-
-FracSum=FracSum+Frac[[jj]]
-
-}
-
-FracXNormFull=Frac[[23]]/(FracSum)
-FracYNormFull=Frac[[24]]/(FracSum)
 mydata=data.frame(cbind(FracXNormFull,FracYNormFull))
 
 gg=union(which(is.na(mydata[,1])==TRUE) , which(is.na(mydata[,1])==TRUE) )
