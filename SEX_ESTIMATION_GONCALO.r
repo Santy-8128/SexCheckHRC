@@ -17,7 +17,9 @@ path <- Args[3]
 dat=read.table(dat,colClasses="character")[,1]
 
 l=length(dat)
-system(paste("rm ",cohort,"_Orig_sample",sep=""))
+system(paste("rm TEMPDATA/",cohort,"_Orig_sample",sep=""))
+
+system(paste("mkdir TEMPDATA"))
 
 print(" Now Generating Summary Statistics for Each Sample ... \n\n")
 
@@ -28,8 +30,8 @@ for(i in 1:l)
 	{
 		print(paste(" Analyzing Sample ",i,sep=""))
 	}
-	system(paste(path," idxstats ",dat[i]," > ",cohort,"_sample_",i," ",sep=""))
-	system(paste(path," view -H ",dat[i]," | tr '\t' '\n' | grep -m1 -w SM | cut -d: -f 2 >> ",cohort,"_Orig_sample",sep=""))
+	system(paste(path," idxstats ",dat[i]," > TEMPDATA/",cohort,"_sample_",i," ",sep=""))
+	system(paste(path," view -H ",dat[i]," | tr '\t' '\n' | grep -m1 -w SM | cut -d: -f 2 >> TEMPDATA/",cohort,"_Orig_sample",sep=""))
 
 }
  
@@ -42,15 +44,15 @@ pdf(paste("SEX_CHECK_",cohort,".pdf",sep=""))
 
 
 
-orignam=read.table(paste(cohort,"_Orig_sample",sep=""),colClasses="character")[,1]
+orignam=read.table(paste("TEMPDATA/",cohort,"_Orig_sample",sep=""),colClasses="character")[,1]
 	
 		
 	
 t="cat "
 for(i in 1:l)
-t=paste(t," ",cohort,"_sample_",i,sep="")
+t=paste(t," TEMPDATA/",cohort,"_sample_",i,sep="")
 
-t=paste(t," | grep -v GL | grep -v NC | grep -v MT > DERP",sep="")
+t=paste(t," | grep -v GL | grep -v NC | grep -v MT > TEMPDATA/",cohort,"DERP",sep="")
 system(t)
 	
 	
@@ -60,8 +62,8 @@ system(t)
 for(j in c(1:22,"X","Y"))
 {
 
-write.table(j,"FILE",quote=FALSE,col.names=FALSE,row.names=FALSE)
- system(paste("perl GREP_CODE.pl -f FILE -t DERP -c 1 -o ",cohort,"_Summary_Chr_",j," ",sep=""))
+write.table(j,paste("TEMPDATA/",cohort,"FILE",sep=""),quote=FALSE,col.names=FALSE,row.names=FALSE)
+ system(paste("perl GREP_CODE.pl -f TEMPDATA/",cohort,"FILE -t TEMPDATA/",cohort,"DERP -c 1 -o TEMPDATA/",cohort,"_Summary_Chr_",j," ",sep=""))
 }
 
 FINAL=dat
@@ -74,7 +76,7 @@ for(jj in 1:length(LIST))
 
 j=LIST[jj]
 
-dat[[jj]]=apply(read.table(paste(cohort,"_Summary_Chr_",j,sep=""),colClasses="character")[,c(2:4)],2,as.numeric)
+dat[[jj]]=apply(read.table(paste("TEMPDATA/",cohort,"_Summary_Chr_",j,sep=""),colClasses="character")[,c(2:4)],2,as.numeric)
 }
 	
 	
